@@ -17,17 +17,17 @@ class User(db.Model):
 
     __tablename__ = "users"
 
-    def __repr__(self):
-        """Provide helpful representation when printed."""
-
-        return "<User user_id=%s email=%s>" % (self.user_id, self.email)
-
 
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     email = db.Column(db.String(64), nullable=True)
     password = db.Column(db.String(64), nullable=True)
     age = db.Column(db.Integer, nullable=True)
     zipcode = db.Column(db.String(15), nullable=True)
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<User user_id=%s email=%s>" % (self.user_id, self.email)
 
 
 class Movie(db.Model):
@@ -36,9 +36,14 @@ class Movie(db.Model):
     __tablename__ = "movies"
 
     movie_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    released_at = db.Column(db.DateTime, nullable=False)
-    imdb_url = db.Column(db.String(150), nullable=False)
+    title = db.Column(db.String(100), nullable=True)
+    released_at = db.Column(db.DateTime, nullable=True)
+    imdb_url = db.Column(db.String(150), nullable=True)
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<Movie movie_id=%s title=%s>" % (self.movie_id, self.title)
 
 class Rating(db.Model):
     """Movie ratings table.""" 
@@ -50,8 +55,19 @@ class Rating(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)   
     score = db.Column(db.Integer, nullable=False)
 
-    movie = db.relationship('Movie')
-    user = db.relationship('User')
+    user = db.relationship('User', 
+                            backref=db.backref("ratings", order_by=rating_id))
+    movie = db.relationship('Movie', 
+                            backref=db.backref("ratings", order_by=rating_id))
+  
+
+    def __repr__(self):
+        """Provide helpful representation when printed."""
+
+        return "<Rating rating_id=%s movie_id =%s user_id=%s score =%s>" % (self.rating_id,
+                                                                            self.movie_id,
+                                                                            self.user_id,
+                                                                            self.score)
 
 
 
