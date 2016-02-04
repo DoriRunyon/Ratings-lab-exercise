@@ -9,8 +9,14 @@
 <h2>Users</h2>
 <p><a href="/users">View all users</a></p>
 
-<a href="/login">Login (if you already have an account)</a>
-<p></p>
-<a href="/sign-in-form">Sign In</a>
+{% if 'user' not in session %} 
+
+    <a href="/login">Login (if you already have an account)</a>
+    <p></p>
+    <a href="/sign-in-form">Sign Up</a>
+    <p></p>
+{% else %}
+    <a href="/log-out">Log Out</a>
+{% endif %}
 
 {% endblock %}
