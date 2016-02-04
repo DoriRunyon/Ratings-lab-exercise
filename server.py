@@ -93,6 +93,15 @@ def user_list():
     users = User.query.all()
     return render_template("user_list.html", users=users)
 
+@app.route('/movies')
+def movie_list():
+    """Show list of movies."""
+
+    #movies = Movie.query.all().order_by(title)
+    #movies = Movie.query.all().order_by(title)
+    movies = db.session.query(Movie).order_by(Movie.title).all()
+    return render_template("movie_list.html", movies=movies)
+
 @app.route('/users/<int:user_id>')    
 def user_page(user_id): 
     """Show details for individual user."""
