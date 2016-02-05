@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h2>Movie Details</h2>
+    <a href="/">Home</a>
+    <ul>
+      <li style="font-weight: bold; font-size: 20px">Title: {{ title }}</li>
+      <li style="font-weight: bold; font-size: 20px">Release Date: {{ released_at }}</li>
+      <li style="font-weight: bold; font-size: 20px"><a href="{{ imdb_url }}">IMDB link</a></li>
+      <p></p>
+      <input type="button" id="enter-rating" value="Rate this movie!">
+      <p></p>
+        <h4>Ratings for {{ title }}: </h4>
+        <ul>
+          {% for score in scores %}
+            <li>{{ score }}</li>
+          {% endfor %}
+
+        </ul>
+
+    </ul>
+
+<script src="http://code.jquery.com/jquery.js"></script>
+
+<script>
+
+var title = "{{ title }}";
+
+function showRatingPosted(result){
+  alert(result);
+}
+
+function submitRating(evt) {
+
+  var ratingInput = prompt("Enter your rating.");
+  var userInputs = {
+    "rating": ratingInput,
+    "title": title
+  };
+
+  $.post("/new_rating",
+         userInputs,
+         showRatingPosted);
+};
+
+$('#enter-rating').click(submitRating);
+
+</script>
+
+{% endblock %}

@@ -129,6 +129,61 @@ def user_page(user_id):
                             movie_scores=movie_scores)
 
 
+@app.route('/movies/<int:movie_id>')    
+def movie_details(movie_id): 
+    """Show details for individual movie."""
+
+    movie = Movie.query.get(movie_id)
+    title = movie.title
+    released_at = movie.released_at
+    imdb_url = movie.imdb_url
+    ratings = movie.ratings
+
+    scores = []
+    for rating in ratings:
+        score = rating.score 
+        scores.append(score)
+
+
+
+    return render_template("movie_details.html", 
+                            title=title,
+                            released_at=released_at,
+                            imdb_url=imdb_url, 
+                            scores=scores) 
+
+@app.route('/new_rating', methods=['POST'])
+def make_new_rating():
+
+    # title = request.form.get("title")
+    score = int(request.form.get("rating"))
+    title = request.form.get("title")
+    #print score
+    #print title 
+
+    movie = Movie.query.filter(Movie.title == title).first()
+    #print movie
+    movie_id = movie.movie_id
+    user_id = session['user']
+
+    rating = Rating.query.filter((Rating.user_id == user_id) & (Rating.movie_id == movie_id)).first()
+    #print rating 
+
+    if rating != None:
+        rating.score = score
+    else:
+        new_rating = Rating(user_id=user_id, 
+                            movie_id=movie_id, 
+                            score=score)
+
+        db.session.add(new_rating)
+        
+    db.session.commit()
+
+    
+    return "SUCCESS! You gave %s a rating of %s." % (title, score)
+                            
+
 if __name__ == "__main__":
     # We have to set debug=True here, since it has to be True at the point
     # that we invoke the DebugToolbarExtension
